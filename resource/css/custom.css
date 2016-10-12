@@ -1,0 +1,82 @@
+p {
+    text-indent:1em;
+}
+
+h1 {
+    border-top:solid 3px powderblue;
+    margin-top:1em;
+    padding-top:2px;
+    color:#008cba;
+}
+
+h2 {
+    border-top:dashed 2px powderblue;
+    margin-top:1em;
+    padding-top:2px;
+    color:#008cba;
+}
+
+h3 {
+    padding-top:2px;
+    color:#008cba;
+}
+h3:before {
+    content:"−";
+    margin-right:0.5em;
+    color:#008cba;
+}
+
+img {
+    display:block;
+    max-width:550px;
+    margin-left:auto;
+    margin-right:auto;
+    margin-bottom:5px;
+}
+
+div.title {
+    font-size:2.8em;
+    margin-bottom:0.5em;
+}
+
+pre.term {
+	border: solid 2px silver;
+	border-top: solid 10px silver;
+	background-color: black;
+	color: white;
+	font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+}
+
+pre.term1 {
+	border: solid 2px cornflowerblue;
+	border-top: solid 10px cornflowerblue;
+}
+
+pre.term2 {
+	border: solid 2px rosybrown;
+	border-top: solid 10px rosybrown;
+}
+
+li.active {
+    background-color:#008cba;
+}
+
+li.active>a {
+    color:white;
+}
+
+li.active>a:hover {
+    background-color:#008cba;
+}
+
+.syntaxhighlighter .container:before, .syntaxhighlighter .container:after {
+    display: block;
+}
+
+div.syntaxhighlighter .line.alt1{
+    background-color:#fefbfa !important;
+}
+
+div.syntaxhighlighter .line.alt2{
+    background-color:#fefbfa !important;
+}

@@ -1,0 +1,648 @@
+<div class="title">チュートリアル</div>
+
+<p>
+このステップバイステップでは，ADFを用いたエージェントの構造を学び，
+サンプルエージェントの一部を書き換え，
+独自のエージェントを開発できるようになることを目指します．
+</p>
+
+
+<h1>ADFの構造を知る</h1>
+<h2>ADFのコンポーネント</h2>
+<p>
+ADFの基本構造を表した図です．
+エージェント開発者は，赤枠または青枠のコンポーネントを開発します．
+</p>
+<img src="image/adfv2_1-overview.png" data-lity>
+<ul>
+<li>黒枠</li>
+<p>
+ADFが提供するクラスです．
+これらを使用して情報の取得また通信，行動の出力をおこないます．
+</p>
+<li style="color:red;">赤枠</li>
+エージェント開発者が記述するクラスです．
+これらで行動の決定をおこないます．
+<p>
+</p>
+<li style="color:blue;">青枠</li>
+<p>
+エージェント開発者が記述するクラスです．
+赤枠のコンポーネントをどのように使用して行動を決定するか記述します，
+（ルールにより変更できない場合もあります．）
+</p>
+</ul>
+<h2>パッケージ図</h2>
+<img src="image/adfv2_1-package.png" data-lity>
+<ul>
+<li>adf.sample</li>
+<p>
+サンプルエージェント
+</p>
+<li>adf.component</li>
+<p>
+開発者が継承して記述するクラス
+</p>
+<li>adf.agent</li>
+<p>
+ADFがデータの入出力のために提供するクラス
+</p>
+<li>adf.launcher</li>
+エージェントの起動用コード
+<p>
+</p>
+</ul>
+<h2>開発者が記述するクラス</h2>
+<p>
+基本的にエージェントを開発する際は，パッケージadf.componentのクラスを継承してコードを記述します．
+</p>
+<h3>Tactics(Control)</h3>
+<p>
+ADFを使用してエージェントをプログラミングするには，
+エージェントがどのように行動させるか記述するTactics(AT,FB,PF)
+またはControl(AC,FS,PO)と呼ばれるクラスを各種類のエージェントごとに記述します．
+TacticsはPlatoon系エージェント，ControlはOffice系のエージェントに対応しています．
+このクラスをベースにエージェントの行動を記述していきます．
+Tactics，Controlクラス内には，５つのイベントハンドラがあります．
+これらのハンドラが呼び出される流れは，以下の図の通りです． 
+</p>
+<img src="image/adfv2_1-tactisc_flow.png" data-lity>
+<ul>
+<li>initialize</li>
+<p>
+共通の初期化を記述する．
+</p>
+<li>precompute</li>
+<p>
+事前計算時の処理を記述する．
+</p>
+<li>resume</li>
+<p>
+事前計算があった場合の事前計算データの読み込みなどを記述する．
+</p>
+<li>preparete</li>
+<p>
+事前計算がなかった場合の初期化を記述する．
+</p>
+<li>think</li>
+<p>
+各ステップの行動決定をModule群を使い記述する．
+</p>
+</ul>
+<h3>ExtAction</h3>
+<p>
+Actionクラスを用いてサーバにエージェントの具体的な行動伝えますが，
+ExtAction(Extended Action)では，抽象的な命令からActionを生成する処理を記述します．
+現在，以下のExtActionが作られることを想定しています．
+</p>
+<ul>
+<li>ActionTransport</li>
+<p>
+救助 (Move+Rescue+Load+Move+Unload)
+</p>
+<li>ActionFireFighting</li>
+<p>
+消火 (Move+Extinguish)
+</p>
+<li>ActionRefill</li>
+<p>
+給水 (Move+Rest)
+</p>
+<li>ActionExtClear</li>
+<p>
+啓開 (Move+Clear)
+</p>
+<li>ActionExtMove</li>
+<p>
+移動 (Move)
+</p>
+<li>ActionHeal</li>
+<p>
+修復 (Move+Rest)
+</p>
+</ul>
+<h3>Modules</h3>
+<p>
+ADFでは，アルゴリズムなどをモジュール化しています．
+これによりコードの再利用性を高めることを目指してる．
+</p>
+<p>
+現在は下の図に示すモジュールが存在する．
+</p>
+<img src="image/abstract-module.png" data-lity>
+<ul>
+<li>TargetSelector</li>
+<p>
+誰を救出するか，どこを消火するか，どこを啓開するかなど，
+リソースアロケーションについて記述する．
+</p>
+<li>PathPlanning</li>
+<p>
+経路探索アルゴリズムを記述する．
+</p>
+<li>Clustering</li>
+<ul>
+<li>StaticClustering</li>
+<p>
+マップの区画わけなどのクラスタリングを記述する．
+</p>
+<li>DynamicClustering</li>
+<p>
+火災のグループ化などのクラスタリングを記述する．
+</p>
+</ul>
+</ul>
+<p>
+これらのモジュールのメソッドを下の図のように呼び出しエージェントの行動を決定する．
+</p>
+<img src="image/tactics-flow.png" data-lity>
+<h2>ADFが提供するクラス</h2>
+<p>
+Action以外のクラスはインスタンスとして提供されます．
+</p>
+<h3>Action</h3>
+<p>
+このクラスを用いて，サーバにエージェントの具体的な行動伝えます．
+thinkの返り値にこのクラスのインスタンスを指定します．
+</p>
+<ul>
+    <li>common</li>
+    ActionMove ( {PATH} ) / ( {PATH}, X, Y)<br>
+    ActionRest ( )
+    <li>ambulance</li>
+    ActionLoad ( TARGET )<br>
+    ActionRescue ( TARGET )<br>
+    ActionUnload ( )
+    <li>fire</li>
+    ActionExtinguish ( TARGET, POWER )<br>
+    ActionRefill ( )
+    <li>police</li>
+    ActionClear ( TARGET ) / ( AGENT, VECTOR) / ( X, Y ) / ( X, Y, TARGET )
+</ul>
+<h3>Info</h3>
+<p>
+メソッドの一覧は，正引きページから調べてください．
+</p>
+<ul>
+    <li>AgentInfo</li> <p>エージェントの情報を取得できます．</p>
+    <li>ScenarioInfo</li> <p>シナリオの情報を取得できます．</p>
+    <li>WorldInfo</li> <p>ワールドの情報を取得できます．</p>
+</ul>
+<h3>PrecomputeData</h3>
+<p>
+事前計算時のデータを格納します．
+precompute，resumeメソッドの引数として渡されます．
+</p>
+例：
+<pre class="brush:java">
+precomputeData.setInteger("test", 0);
+int test = precomputeData.getInteger("test");
+precomputeData.setIntegerList("testList", testList);
+List&lt;Integer&gt; testList = precomputeData.getIntegerList("testList");
+</pre>
+<p>Integerの他に，Double・Boolean・String・EntityIDを格納できます．</p>
+<h3>DevelopData</h3>
+<p>
+エージェント開発時に動的に変更する値を取得します．
+エージェントをDevelopModeで起動した場合のみ，値を取得できます．
+取得できない場合は，DEFAULE VALUEを返します．
+値は，JSONでファイルまたは，エージェント起動時の引数から入力できます．
+</p>
+例：
+<pre class="brush:java">
+int test = developData.getInteger("test", 0); // (KEY, DEFAULT VALUE)
+List&lt;Integer&gt; testList = developData.getIntegerList("testList", testList);
+</pre>
+<p>Integerの他に，Double・Boolean・Stringを取得できます．</p>
+<h3>ModuleManager</h3>
+<p>
+このクラスでModuleとExtActionのインスタンスを管理します．
+</p>
+<img src="image/adfv2_1-mm.png" data-lity>
+例：
+<pre class="brush:java">
+this.pathPlanning = moduleManager.getModule("TacticsFire.PathPlanning"
+                                           , "adf.sample.module.algorithm.SamplePathPlanning");
+...
+this.pathPlanning = moduleManager.getModule("TacticsFire.PathPlanning");
+...
+this.pathPlanning = moduleManager.getModule("adf.sample.module.algorithm.MyPathPlanning"
+                                           , "adf.sample.module.algorithm.SamplePathPlanning");
+...
+this.pathPlanning = moduleManager.getModule("adf.sample.module.algorithm.MyPathPlanning");
+...
+action = moduleManager.getExtAction("TacticsFire.ActionFireFighting"
+                                   , "adf.sample.extaction.ActionFireFighting").setTarget(target).calc().getAction();
+...
+action = moduleManager.getExtAction("TacticsFire.ActionFireFighting").setTarget(target).calc().getAction();
+...
+action = moduleManager.getExtAction("adf.sample.extaction.ActionFireFighting2"
+                                   , "adf.sample.extaction.ActionFireFighting").setTarget(target).calc().getAction();
+...
+action = moduleManager.getExtAction("adf.sample.extaction.ActionFireFighting2").setTarget(target).calc().getAction();
+</pre>
+<h3>MessageManager</h3>
+<p>
+他のエージェントに送信するMessageや受信したMessageを管理します． 
+</p>
+<ul>
+    <li>CommunicationModule</li>
+    <p>
+    メッセージの送受信を行うモジュールです．
+    CommunicationModuleは仕組み上．載せ替えることが可能になっていますが， ADFを使用する開発者は基本的に載せ替えないようにしてください． 
+    </p>
+    <li>MessageBundle</li>
+    <p>
+    MessageBundleは通信するメッセージのクラスをまとめてMessageManagerに登録するためのクラスです．
+    StandardMessageBundle は自動で組み込まれます．
+    MessageBundleは，内包するメッセージ数が合計で16までであれば追加できます．ただし基本的には StandardMessageBundle のみで通信できることを目指してください． 
+    </p>
+    <li>StandardMessageBundle</li>
+    <p>
+    ADF標準のメッセージです．
+    informationのメッセージは，各Entityの情報を伝達するために使用します．
+    topdownのメッセージは，エージェントに命令を伝達するために使用します．
+    topdownのメッセージは宛先を指定できる指向性のあるメッセージですが，
+    不特定エージェントへの要請として宛先を指定しないで送信することも可能です．
+    </p>
+    <ul>
+        <li>information.MessageAmbulanceTeam</li>
+        <li>information.MessageBuilding</li>
+        <li>information.MessageCivilian</li>
+        <li>information.MessageFireBrigade</li>
+        <li>information.MessagePoliceForce</li>
+        <li>information.MessageRoad </li>
+        <li>topdown.CommandAmbulance</li>
+        <li>topdown.CommandFire</li>
+        <li>topdown.CommandPolice</li>
+        <li>topdown.CommandScout</li>
+        <li>topdown.MessageReport</li>
+    </ul>
+</ul>
+
+<h1>IDEを使う(Optional)</h1>
+<p>
+IDEを使用する場合のプロジェクトの作成方法を説明します．
+このチュートリアルでは，IntelliJとEclipseの場合を取り上げます．
+わからない場合はIntelliJを使うことをおすすめします．
+</p>
+<h2>IntelliJ IDEA</h2>
+<p>IntelliJ IDEA (COMMUNITY 2016.2)</p>
+<div id="pi-intellij1">
+<img src="image/pi/intellij01.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',1)" disabled="disabled">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',2)">Next</a> </div> </div>
+<div id="pi-intellij2" style="display:none;"> <img src="image/pi/intellij02.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',1)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',3)">Next</a> </div> </div>
+<div id="pi-intellij3" style="display:none;"> <img src="image/pi/intellij03.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',2)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',4)">Next</a> </div> </div>
+<div id="pi-intellij4" style="display:none;"> <img src="image/pi/intellij04.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',3)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',5)">Next</a> </div> </div>
+<div id="pi-intellij5" style="display:none;"> <img src="image/pi/intellij05.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',4)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',6)">Next</a> </div> </div>
+<div id="pi-intellij6" style="display:none;"> <img src="image/pi/intellij06.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',5)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',7)">Next</a> </div> </div>
+<div id="pi-intellij7" style="display:none;"> <img src="image/pi/intellij07.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',6)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',8)">Next</a> </div> </div>
+<div id="pi-intellij8" style="display:none;"> <img src="image/pi/intellij08.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',7)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',9)">Next</a> </div> </div>
+<div id="pi-intellij9" style="display:none;"> <img src="image/pi/intellij09.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',8)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',10)">Next</a> </div> </div>
+<div id="pi-intellij10" style="display:none;"> <img src="image/pi/intellij10.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',9)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',11)">Next</a> </div> </div>
+<div id="pi-intellij11" style="display:none;"> <img src="image/pi/intellij11.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',10)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',12)">Next</a> </div> </div>
+<div id="pi-intellij12" style="display:none;"> <img src="image/pi/intellij12.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',11)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',13)">Next</a> </div> </div>
+<div id="pi-intellij13" style="display:none;"> <img src="image/pi/intellij13.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',12)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',14)">Next</a> </div> </div>
+<div id="pi-intellij14" style="display:none;"> <img src="image/pi/intellij14.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',13)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',15)">Next</a> </div> </div>
+<div id="pi-intellij15" style="display:none;"> <img src="image/pi/intellij15.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',14)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',16)">Next</a> </div> </div>
+<div id="pi-intellij16" style="display:none;"> <img src="image/pi/intellij16.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',15)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',17)">Next</a> </div> </div>
+<div id="pi-intellij17" style="display:none;"> <img src="image/pi/intellij17.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',16)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',18)">Next</a> </div> </div>
+<div id="pi-intellij18" style="display:none;"> <img src="image/pi/intellij18.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',17)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',19)">Next</a> </div> </div>
+<div id="pi-intellij19" style="display:none;"> <img src="image/pi/intellij19.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',18)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',20)">Next</a> </div> </div>
+<div id="pi-intellij20" style="display:none;"> <img src="image/pi/intellij20.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',19)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',21)">Next</a> </div> </div>
+<div id="pi-intellij21" style="display:none;"> <img src="image/pi/intellij21.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',20)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',22)">Next</a> </div> </div>
+<div id="pi-intellij22" style="display:none;"> <img src="image/pi/intellij22.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',21)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',23)">Next</a> </div> </div>
+<div id="pi-intellij23" style="display:none;"> <img src="image/pi/intellij23.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',22)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',24)">Next</a> </div> </div>
+<div id="pi-intellij24" style="display:none;"> <img src="image/pi/intellij24.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',23)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',25)">Next</a> </div> </div>
+<div id="pi-intellij25" style="display:none;"> <img src="image/pi/intellij25.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',24)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',26)">Next</a> </div> </div>
+<div id="pi-intellij26" style="display:none;"> <img src="image/pi/intellij26.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',25)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-intellij',26)" disabled="disabled">Next</a> </div> </div>
+<ul>
+    <li>"Import Project"</li>
+    <li>adf-sampleのディレクトリを選択して"OK"</li>
+    <li>"Next" x 6</li>
+    <li>"Finish"</li>
+    <li>読み込み処理が完了するとProjectサイドバーが開きます</li>
+    <li>"File"→"Project Structure..."</li>
+    <li>Project compiler outputをoutからbuildに書き換えして"OK"</li>
+    <li>"▼"→"Edit Configurations..."</li>
+    <li>"＋"→"Application"</li>
+    <li>適当な名前を設定</li>
+    <li>Main classに adf.Main を設定</li>
+    <li>Program argumentsに -compile を設定</li>
+    <li>Before launch MakeからMakeを"−"で削除して"OK"</li>
+    <li>"▶"で動作確認</li>
+</ul>
+<h2>Eclipse</h2>
+<p>Eclipse (Neon)</p>
+<p style="color:red;">一度コマンドでエージェントをコンパイルしてからインポートしてください</p>
+<div id="pi-eclipse1">
+<img src="image/pi/eclipse01.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',1)" disabled="disabled">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',2)">Next</a> </div> </div>
+<div id="pi-eclipse2" style="display:none;"> <img src="image/pi/eclipse02.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',1)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',3)">Next</a> </div> </div>
+<div id="pi-eclipse3" style="display:none;"> <img src="image/pi/eclipse03.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',2)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',4)">Next</a> </div> </div>
+<div id="pi-eclipse4" style="display:none;"> <img src="image/pi/eclipse04.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',3)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',5)">Next</a> </div> </div>
+<div id="pi-eclipse5" style="display:none;"> <img src="image/pi/eclipse05.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',4)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',6)">Next</a> </div> </div>
+<div id="pi-eclipse6" style="display:none;"> <img src="image/pi/eclipse06.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',5)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',7)">Next</a> </div> </div>
+<div id="pi-eclipse7" style="display:none;"> <img src="image/pi/eclipse07.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',6)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',8)">Next</a> </div> </div>
+<div id="pi-eclipse8" style="display:none;"> <img src="image/pi/eclipse08.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',7)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',9)">Next</a> </div> </div>
+<div id="pi-eclipse9" style="display:none;"> <img src="image/pi/eclipse09.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',8)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',10)">Next</a> </div> </div>
+<div id="pi-eclipse10" style="display:none;"> <img src="image/pi/eclipse10.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',9)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',11)">Next</a> </div> </div>
+<div id="pi-eclipse11" style="display:none;"> <img src="image/pi/eclipse11.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',10)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',12)">Next</a> </div> </div>
+<div id="pi-eclipse12" style="display:none;"> <img src="image/pi/eclipse12.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',11)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',13)">Next</a> </div> </div>
+<div id="pi-eclipse13" style="display:none;"> <img src="image/pi/eclipse13.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',12)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',14)">Next</a> </div> </div>
+<div id="pi-eclipse14" style="display:none;"> <img src="image/pi/eclipse14.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',13)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',15)">Next</a> </div> </div>
+<div id="pi-eclipse15" style="display:none;"> <img src="image/pi/eclipse15.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',14)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',16)">Next</a> </div> </div>
+<div id="pi-eclipse16" style="display:none;"> <img src="image/pi/eclipse16.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',15)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',17)">Next</a> </div> </div>
+<div id="pi-eclipse17" style="display:none;"> <img src="image/pi/eclipse17.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',16)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',18)">Next</a> </div> </div>
+<div id="pi-eclipse18" style="display:none;"> <img src="image/pi/eclipse18.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',17)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',19)">Next</a> </div> </div>
+<div id="pi-eclipse19" style="display:none;"> <img src="image/pi/eclipse19.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',18)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',20)">Next</a> </div> </div>
+<div id="pi-eclipse20" style="display:none;"> <img src="image/pi/eclipse20.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',19)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',21)">Next</a> </div> </div>
+<div id="pi-eclipse21" style="display:none;"> <img src="image/pi/eclipse21.png" data-lity> <div style="text-align:center;"> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',20)">Prev</a> <a class="btn btn-primary" href="javascript:switchNext('pi-eclipse',21)" disabled="disabled">Next</a> </div> </div> 
+<ul>
+    <li>"File"→"New"→"Java Project"</li>
+    <li>適当な名前を設定</li>
+    <li>"Use default location"をアンチェック</li>
+    <li>"Browse..."でadf-sampleのディレクトリを選択して"OK"</li>
+    <li>"Next &gt;"</li>
+    <li>"Finish"</li>
+    <li>Welcomを閉じる</li>
+    <li>作成したプロジェクトを開く</li>
+    <li>"Run"→ "Run Configurations..."</li>
+    <li>"Java Application"をダブルクリック</li>
+    <li>適当な名前を設定</li>
+    <li>Main classに adf.Main を設定</li>
+    <li>ArgumentsタブのProgram argumentsに -compile を設定</li>
+    <li>"Apply"</li>
+    <li>"Close"</li>
+    <li>"▶"で動作確認</li>
+</ul>
+
+<h1>独自のモジュールを接続する</h1>
+<p>
+実際にモジュールを作成してエージェントに接続してみましょう．
+このチュートリアルでは，例としてA*を用いたPathPlanningモジュールを作成して，
+サンプルエージェントに接続します．
+</p>
+<h2>PathPlanning</h2>
+<h3>準備</h3>
+<p>
+まずは，SamplePathPlanning.javaをコピーしてベースを作ります．
+</p>
+<pre class="term">
+mkdir -p src/myteam/module/algorithm
+cp src/adf/sample/module/algorithm/SamplePathPlanning.java src/myteam/module/algorithm/AStarPathPlanning.java
+</pre>
+<p>
+次にコード内を整えます．
+コンストラクタで呼び出している，init()[30行]は便利なので残しておきます．
+</p>
+<pre class="brush:java; highlight:[1, 17, 25, 84, 89]">
+package myteam.module.algorithm;
+
+import adf.agent.develop.DevelopData;
+import adf.agent.info.AgentInfo;
+import adf.agent.info.ScenarioInfo;
+import adf.agent.info.WorldInfo;
+import adf.agent.module.ModuleManager;
+import adf.agent.precompute.PrecomputeData;
+import adf.component.module.algorithm.PathPlanning;
+import rescuecore2.misc.collections.LazyMap;
+import rescuecore2.standard.entities.Area;
+import rescuecore2.worldmodel.Entity;
+import rescuecore2.worldmodel.EntityID;
+
+import java.util.*;
+
+public class AStarPathPlanning extends PathPlanning {
+
+    private Map&lt;EntityID, Set&lt;EntityID&gt;&gt; graph;
+
+    private EntityID from;
+    private Collection&lt;EntityID&gt; targets;
+    private List&lt;EntityID&gt; result;
+
+    public AStarPathPlanning(AgentInfo ai, WorldInfo wi, ScenarioInfo si, ModuleManager moduleManager, DevelopData developData) {
+        super(ai, wi, si, moduleManager, developData);
+        this.init();
+    }
+
+    private void init() {
+        Map&lt;EntityID, Set&lt;EntityID&gt;&gt; neighbours = new LazyMap&lt;EntityID, Set&lt;EntityID&gt;&gt;() {
+            @Override
+            public Set&lt;EntityID&gt; createValue() {
+                return new HashSet&lt;&gt;();
+            }
+        };
+        for (Entity next : this.worldInfo) {
+            if (next instanceof Area) {
+                Collection&lt;EntityID&gt; areaNeighbours = ((Area) next).getNeighbours();
+                neighbours.get(next.getID()).addAll(areaNeighbours);
+            }
+        }
+        this.graph = neighbours;
+    }
+
+    @Override
+    public List&lt;EntityID&gt; getResult() {
+        return this.result;
+    }
+
+    @Override
+    public PathPlanning setFrom(EntityID id) {
+        this.from = id;
+        return this;
+    }
+
+    @Override
+    public PathPlanning setDestination(Collection&lt;EntityID&gt; targets) {
+      this.targets = targets;
+      return this;
+    }
+
+    @Override
+    public PathPlanning precompute(PrecomputeData precomputeData) {
+        super.precompute(precomputeData);
+        return this;
+    }
+
+    @Override
+    public PathPlanning resume(PrecomputeData precomputeData) {
+        super.resume(precomputeData);
+        return this;
+    }
+
+    @Override
+    public PathPlanning preparate() {
+        super.preparate();
+        return this;
+    }
+
+    @Override
+    public PathPlanning calc() {
+
+
+
+        return this;
+    }
+
+
+
+}
+</pre>
+<h3>実装</h3>
+<p>
+<a href="https://ja.wikipedia.org/wiki/A*">A*アルゴリズム</a>を実装しましょう．
+実装においては，コンストラクタ[27行]で初期化処理，
+時間がかかる処理は，precompute()[64行]・resume()[70行]・preparete()[76行]メソッドを使って初期化します．
+</p>
+<p>
+計算部はcalc()[82行]に記述し，結果はgetResult()[47行]で取得できるように記述します．
+</p>
+<p>この例では，まずノードの内部クラスを作成します．</p>
+<pre class="brush:java">
+private class Node {
+    EntityID id;
+    EntityID parent;
+
+    double cost;
+    double heuristic;
+
+    public Node(Node from, EntityID id) {
+        this.id = id;
+
+        if (from == null) {
+            this.cost = 0;
+        } else {
+            this.parent = from.getID();
+            this.cost = from.getCost() + worldInfo.getDistance(from.getID(), id);
+        }
+
+        this.heuristic = worldInfo.getDistance(id, targets.toArray(new EntityID[targets.size()])[0]);
+    }
+
+    public EntityID getID() {
+        return id;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public double estimate() {
+        return cost + heuristic;
+    }
+
+    public EntityID getParent() {
+        return this.parent;
+    }
+}
+</pre>
+<p>calc()に計算部を記述します．起点はインスタンス変数from，終点インスタンス変数targetsはから取得します．結果はインスタンス変数resultに置きます．コメントの番号はWikipedia上の手順の番号です．</p>
+<pre class="brush:java">
+@Override
+public PathPlanning calc() {
+    //  1
+    List&lt;EntityID&gt; open = new LinkedList&lt;&gt;();
+    List&lt;EntityID&gt; close = new LinkedList&lt;&gt;();
+    Map&lt;EntityID, Node&gt; nodeMap = new HashMap&lt;&gt;();
+
+    //  3
+    open.add(this.from);
+    nodeMap.put(this.from, new Node(null, this.from));
+    close.clear();
+
+    while (true) {
+        //  4
+        if (open.size() &lt; 0) {
+            this.result = null;
+            return this;
+        }
+
+        //  5
+        Node n = null;
+        for (EntityID id : open) {
+            Node node = nodeMap.get(id);
+
+            if (n == null) {
+                n = node;
+            } else if (node.estimate() &lt; n.estimate()) {
+                n = node;
+            }
+        }
+
+        //  6
+        if (targets.contains(n.getID())) {
+            //  9
+            List&lt;EntityID&gt; path = new LinkedList&lt;&gt;();
+            while (n != null) {
+                path.add(0, n.getID());
+                n = nodeMap.get(n.getParent());
+            }
+
+            this.result = path;
+            return this;
+        }
+        open.remove(n.getID());
+        close.add(n.getID());
+
+        //  7
+        Collection&lt;EntityID&gt; neighbours = this.graph.get(n.getID());
+        for (EntityID neighbour : neighbours) {
+            Node m = new Node(n, neighbour);
+
+            if (!open.contains(neighbour) && !close.contains(neighbour)) {
+                open.add(m.getID());
+                nodeMap.put(neighbour, m);
+            }
+            else if (open.contains(neighbour) && m.estimate() &lt; nodeMap.get(neighbour).estimate()) {
+                nodeMap.put(neighbour, m);
+            }
+            else if (!close.contains(neighbour) && m.estimate() &lt; nodeMap.get(neighbour).estimate()) {
+                nodeMap.put(neighbour, m);
+            }
+        }
+    }
+}
+</pre>
+<h2>module.cfg</h2>
+<p>
+module.cfg内のPathPlanningの値を今回作成したモジュールに置き換えます．
+この設定ファイル内の対応する箇所を書き換えることでモジュールを簡単に置き換えることができます．
+</p>
+<pre class="brush:plain; highlight:[1, 8, 15]">
+TacticsAmbulance.PathPlanning : myteam.module.algorithm.AStarPathPlanning
+TacticsAmbulance.Clustering : adf.sample.module.algorithm.SampleKMeans
+TacticsAmbulance.HumanSelector : adf.sample.module.complex.SampleVictimSelector
+TacticsAmbulance.Search : adf.sample.module.complex.SampleSearch
+TacticsAmbulance.TaskHumanSelector : adf.sample.module.complex.topdown.SampleTaskVictimSelector
+TacticsAmbulance.TaskSearch : adf.sample.module.complex.topdown.SampleTaskSearch
+
+TacticsFire.PathPlanning : myteam.module.algorithm.AStarPathPlanning
+TacticsFire.Clustering : adf.sample.module.algorithm.SampleKMeans
+TacticsFire.BuildingSelector : adf.sample.module.complex.SampleBuildingSelector
+TacticsFire.Search : adf.sample.module.complex.SampleSearch
+TacticsFire.TaskBuildingSelector : adf.sample.module.complex.topdown.SampleTaskBuildingSelector
+TacticsFire.TaskSearch : adf.sample.module.complex.topdown.SampleTaskSearch
+
+TacticsPolice.PathPlanning : myteam.module.algorithm.AStarPathPlanning
+TacticsPolice.Clustering : adf.sample.module.algorithm.SampleKMeans
+TacticsPolice.RoadSelector : adf.sample.module.complex.SampleRoadSelector
+TacticsPolice.Search : adf.sample.module.complex.SampleSearch
+TacticsPolice.TaskRoadSelector : adf.sample.module.complex.topdown.SampleTaskRoadSelector
+TacticsPolice.TaskSearch : adf.sample.module.complex.topdown.SampleTaskSearch
+
+TacticsAmbulance.ActionTransport : adf.sample.extaction.ActionTransport
+TacticsAmbulance.ActionSearch : adf.sample.extaction.ActionExtMove
+
+TacticsFire.ActionFireFighting : adf.sample.extaction.ActionFireFighting
+TacticsFire.ActionSearch : adf.sample.extaction.ActionExtMove
+
+TacticsPolice.ActionExtClear : adf.sample.extaction.ActionExtClear
+TacticsPolice.ActionSearch : adf.sample.extaction.ActionExtMove
+</pre>
+<h1>最後に</h1>
+<p>
+このチュートリアルでは，ADFの構造を簡単に解説し，
+PathPlanningモジュールを作成・エージェントに適用する手順を説明しました．
+実際にエージェント開発をおこなう際は，本ページ前半，ADFのサンプルコード，逆引き，
+APIドキュメントを参照してください．
+</p>
+

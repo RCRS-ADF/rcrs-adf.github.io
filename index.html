@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>RCRS-ADF Docs (Ja)</title>
+
+        <link href="./resource/css/jquery-ui.min.css" rel="stylesheet">
+        <link href="./resource/css/jquery.tocify.css" rel="stylesheet">
+        <link href="./resource/css/lity.min.css" rel="stylesheet">
+        <link href="./resource/css/bootstrap.min.css" rel="stylesheet">
+        <link href="./resource/css/custom.css" rel="stylesheet">
+
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <script type="text/javascript" src="./resource/sh/shCore.js"></script>
+        <script type="text/javascript" src="./resource/sh/shBrushBash.js"></script>
+        <script type="text/javascript" src="./resource/sh/shBrushJava.js"></script>
+        <script type="text/javascript" src="./resource/sh/shBrushPlain.js"></script>
+        <link href="./resource/sh/shCoreDefault.css" rel="stylesheet">
+        <link href="./resource/sh/shThemeDefault.css" rel="stylesheet">
+        <link href="./resource/sh/withBootstrap.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <div class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">RCRS-ADF Docs (ja)</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 hidden-xs">
+                    <div id="toc"></div>
+                </div>
+                <div id="pageContents" class="col-sm-9">
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script src="./resource/js/jquery.min.js"></script>
+        <script src="./resource/js/jquery-ui.min.js"></script>
+        <script src="./resource/js/jquery.tocify.min.js"></script>
+        <script src="./resource/js/bootstrap.min.js"></script>
+        <script src="./resource/js/lity.min.js"></script>
+        <script src="./resource/js/simpleimport.js"></script>
+        <script src="./resource/js/custom.js"></script>
+        <script type="text/javascript">
+simpleimport("bs-example-navbar-collapse-2","nav.html");
+simpleimport("pageContents",(location.search.length<=2?"default.html":location.search.substr(1)),function(){$(function() { $("#toc").tocify();});setTimeout("SyntaxHighlighter.highlight();", 500);});
+        </script>
+        <!-- /Scripts -->
+    </body>
+</html>

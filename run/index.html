@@ -1,0 +1,92 @@
+<div class="title">とりあえず実行</div>
+<p>
+サーバとエージェントは別々のターミナルで起動します．
+サーバは<span style="background-color:silver;">灰色</span>の枠，
+エージェントは<span style="color:white;background-color:cornflowerblue;">青色</span>の枠で説明します．
+</p>
+<h1>サーバの準備</h1>
+サーバはUbuntuを想定して説明します．
+<h2>要求環境</h2>
+<ul>
+<li>Oracle JDK (checked 1.8.0_40) </li>
+<li>wget, bash, xterm, tar, gzip, etc.</li>
+</ul>
+<h2>Ubuntuの場合</h2>
+<p>
+以下のスクリプトでカレントディレクトリにroborescue-v1.2としてインストールされます．
+</p>
+<pre class="term">
+$ wget -O - https://raw.githubusercontent.com/tkmnet/rcrs-scripts/master/install-roborescue.sh
+$ sh install-roborescue.sh
+</pre>
+<p>
+下のように表示されれば準備完了です．
+</p>
+<pre class="term">
+BUILD SUCCESSFUL
+Total time: 20 seconds
+</pre>
+
+<h1>サンプルエージェントの準備</h1>
+<h2>サンプルのダウンロード</h2>
+<pre class="term term1">
+$ wget -O - https://github.com/RCRS-ADF/RCRS-ADF/releases/download/release/adf-sample.tar.gz | tar xf -
+</pre>
+<h2>エージェントのコンパイル</h2>
+<p>
+下に示す例のようにコンパイルをおこなってください．
+</p>
+<pre class="term term1">
+$ cd adf-sample
+$ java -jar ./library/rescue/adf/adf-core.jar -compile
+</pre>
+<p>
+下のように表示されればコンパイル完了です．
+</p>
+<pre class="term term1">
+[START ] Agent compile
+[INFO  ] Working directory: /home/takamin/Workspace/sample
+[FINISH] Agent compile
+[START ] Agent class check
+[FINISH] Agent class check (0 warning)
+</pre>
+<h1>シミュレーションの実行</h1>
+<h2>事前計算を実行</h2>
+<p>
+シミュレーションの実行において，2分間の事前計算をおこなうことができます．
+（ただし，RCRSのルールにより事前計算をおこなわない場合もエージェントを実行できるようにする必要があります．）
+</p>
+<ol>
+    <li>サーバの起動</li>
+<pre class="term">
+$ cd roborescue-v1.2
+$ cd boot
+$ bash start-precompute.sh
+</pre>
+    <li>エージェントの接続</li>
+<p>
+事前計算時はOffice以外のエージェントを各1台ずつ接続します．
+</p>
+<pre class="term term1">
+$ sh precompute.sh 1 0 1 0 1 0 localhost & APID=$! ; sleep 120 ; kill $APID
+</pre>
+</ol>
+<h2>本シミュレーションを実行</h2>
+<ol>
+    <li>サーバの起動</li>
+<pre class="term">
+ # Ctrl+C で起動中のサーバを停止してください．
+$ sh kill.sh
+$ bash start-comprun.sh
+</pre>
+    <li>エージェントの接続</li>
+<p>
+本シミュレーション時は全てのエージェントを接続します．
+</p>
+<pre class="term term1">
+$ sh start.sh -1 -1 -1 -1 -1 -1 localhost
+</pre>
+</ol>
+
+<a class="btn btn-default pull-right" href="?sbs">Next</a>
+
