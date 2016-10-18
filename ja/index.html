@@ -64,7 +64,7 @@
         <script src="./resource/js/custom.js"></script>
         <script type="text/javascript">
 simpleimport("bs-example-navbar-collapse-2","nav.html");
-simpleimport("pageContents",(location.search.length<=2?"default.html":location.search.substr(1)),function(){$(function() { $("#toc").tocify();});setTimeout("SyntaxHighlighter.highlight();", 500);});
+simpleimport("pageContents",(location.search.length<=2?"default.html":location.search.substr(1)+".html"),function(){$(function() { $("#toc").tocify();});setTimeout("SyntaxHighlighter.highlight();", 500);});
         </script>
         <!-- /Scripts -->
     </body>
