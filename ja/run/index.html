@@ -5,7 +5,7 @@
 エージェントは<span style="color:white;background-color:cornflowerblue;">青色</span>の枠で説明します．
 </p>
 <h1>サーバの準備</h1>
-サーバはUbuntuを想定して説明します．
+サーバはUbuntuを想定して説明します．(Macでも確認しました．)
 <h2>要求環境</h2>
 <ul>
 <li>Oracle JDK (checked 1.8.0_40) </li>
@@ -16,7 +16,7 @@
 以下のスクリプトでカレントディレクトリにroborescue-v1.2としてインストールされます．
 </p>
 <pre class="term">
-$ wget https://raw.githubusercontent.com/tkmnet/rcrs-scripts/master/install-roborescue.sh
+$ curl -O https://raw.githubusercontent.com/tkmnet/rcrs-scripts/master/install-roborescue.sh
 $ sh install-roborescue.sh
 </pre>
 <p>
@@ -30,7 +30,7 @@ Total time: 20 seconds
 <h1>サンプルエージェントの準備</h1>
 <h2>サンプルのダウンロード</h2>
 <pre class="term term1">
-$ wget -O - https://github.com/RCRS-ADF/RCRS-ADF/releases/download/release/adf-sample.tar.gz | tar xf -
+$ curl https://github.com/RCRS-ADF/RCRS-ADF/releases/download/release/adf-sample.tar.gz | tar xf -
 </pre>
 <h2>エージェントのコンパイル</h2>
 <p>
