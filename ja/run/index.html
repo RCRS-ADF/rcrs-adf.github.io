@@ -16,7 +16,7 @@
 以下のスクリプトでカレントディレクトリにroborescue-v1.2としてインストールされます．
 </p>
 <pre class="term">
-$ curl -O https://raw.githubusercontent.com/tkmnet/rcrs-scripts/master/install-roborescue.sh
+$ curl -L -O https://raw.githubusercontent.com/tkmnet/rcrs-scripts/master/install-roborescue.sh
 $ sh install-roborescue.sh
 </pre>
 <p>
@@ -30,7 +30,8 @@ Total time: 20 seconds
 <h1>サンプルエージェントの準備</h1>
 <h2>サンプルのダウンロード</h2>
 <pre class="term term1">
-$ curl https://github.com/RCRS-ADF/RCRS-ADF/releases/download/release/adf-sample.tar.gz | tar xf -
+$ curl -L -O https://github.com/RCRS-ADF/RCRS-ADF/releases/download/release/adf-sample.tar.gz
+$ tar xf adf-sample.tar.gz
 </pre>
 <h2>エージェントのコンパイル</h2>
 <p>
