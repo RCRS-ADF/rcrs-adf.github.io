@@ -13,7 +13,7 @@
 ADFの基本構造を表した図です．
 エージェント開発者は，赤枠または青枠のコンポーネントを開発します．
 </p>
-<img src="image/adfv2_1-overview.png" data-lity>
+<img src="image/adfv2_2-overview.png" data-lity>
 <ul>
 <li>黒枠</li>
 <p>
@@ -33,7 +33,7 @@ ADFが提供するクラスです．
 </p>
 </ul>
 <h2>パッケージ図</h2>
-<img src="image/adfv2_1-package.png" data-lity>
+<img src="image/adfv2_2-package.png" data-lity>
 <ul>
 <li>adf.sample</li>
 <p>
@@ -56,14 +56,13 @@ ADFがデータの入出力のために提供するクラス
 <p>
 基本的にエージェントを開発する際は，パッケージadf.componentのクラスを継承してコードを記述します．
 </p>
-<h3>Tactics(Control)</h3>
+<h3>Tactics</h3>
 <p>
 ADFを使用してエージェントをプログラミングするには，
-エージェントがどのように行動させるか記述するTactics(AT,FB,PF)
-またはControl(AC,FS,PO)と呼ばれるクラスを各種類のエージェントごとに記述します．
-TacticsはPlatoon系エージェント，ControlはOffice系のエージェントに対応しています．
+エージェントがどのように行動させるか記述するTactics
+を各種類のエージェントごとに記述します．
 このクラスをベースにエージェントの行動を記述していきます．
-Tactics，Controlクラス内には，５つのイベントハンドラがあります．
+Tacticsクラス内には，５つのイベントハンドラがあります．
 これらのハンドラが呼び出される流れは，以下の図の通りです． 
 </p>
 <img src="image/adfv2_1-tactisc_flow.png" data-lity>
@@ -131,7 +130,7 @@ ADFでは，アルゴリズムなどをモジュール化しています．
 </p>
 <img src="image/abstract-module.png" data-lity>
 <ul>
-<li>TargetSelector</li>
+<li>TargetDetector</li>
 <p>
 誰を救出するか，どこを消火するか，どこを啓開するかなど，
 リソースアロケーションについて記述する．
@@ -218,7 +217,7 @@ List&lt;Integer&gt; testList = developData.getIntegerList("testList", testList);
 <p>
 このクラスでModuleとExtActionのインスタンスを管理します．
 </p>
-<img src="image/adfv2_1-mm.png" data-lity>
+<img src="image/adfv2_2-mm.png" data-lity>
 例：
 <pre class="brush:java">
 this.pathPlanning = moduleManager.getModule("TacticsFire.PathPlanning"
@@ -261,8 +260,8 @@ action = moduleManager.getExtAction("adf.sample.extaction.ActionFireFighting2").
     <p>
     ADF標準のメッセージです．
     informationのメッセージは，各Entityの情報を伝達するために使用します．
-    topdownのメッセージは，エージェントに命令を伝達するために使用します．
-    topdownのメッセージは宛先を指定できる指向性のあるメッセージですが，
+    centralizedのメッセージは，エージェントに命令を伝達するために使用します．
+    centralizedのメッセージは宛先を指定できる指向性のあるメッセージですが，
     不特定エージェントへの要請として宛先を指定しないで送信することも可能です．
     </p>
     <ul>
@@ -272,11 +271,11 @@ action = moduleManager.getExtAction("adf.sample.extaction.ActionFireFighting2").
         <li>information.MessageFireBrigade</li>
         <li>information.MessagePoliceForce</li>
         <li>information.MessageRoad </li>
-        <li>topdown.CommandAmbulance</li>
-        <li>topdown.CommandFire</li>
-        <li>topdown.CommandPolice</li>
-        <li>topdown.CommandScout</li>
-        <li>topdown.MessageReport</li>
+        <li>centralized.CommandAmbulance</li>
+        <li>centralized.CommandFire</li>
+        <li>centralized.CommandPolice</li>
+        <li>centralized.CommandScout</li>
+        <li>centralized.MessageReport</li>
     </ul>
 </ul>
 
@@ -612,22 +611,22 @@ TacticsAmbulance.PathPlanning : myteam.module.algorithm.AStarPathPlanning
 TacticsAmbulance.Clustering : adf.sample.module.algorithm.SampleKMeans
 TacticsAmbulance.HumanSelector : adf.sample.module.complex.SampleVictimSelector
 TacticsAmbulance.Search : adf.sample.module.complex.SampleSearch
-TacticsAmbulance.TaskHumanSelector : adf.sample.module.complex.topdown.SampleTaskVictimSelector
-TacticsAmbulance.TaskSearch : adf.sample.module.complex.topdown.SampleTaskSearch
+TacticsAmbulance.TaskHumanSelector : adf.sample.module.complex.centralized.SampleTaskVictimSelector
+TacticsAmbulance.TaskSearch : adf.sample.module.complex.centralized.SampleTaskSearch
 
 TacticsFire.PathPlanning : myteam.module.algorithm.AStarPathPlanning
 TacticsFire.Clustering : adf.sample.module.algorithm.SampleKMeans
 TacticsFire.BuildingSelector : adf.sample.module.complex.SampleBuildingSelector
 TacticsFire.Search : adf.sample.module.complex.SampleSearch
-TacticsFire.TaskBuildingSelector : adf.sample.module.complex.topdown.SampleTaskBuildingSelector
-TacticsFire.TaskSearch : adf.sample.module.complex.topdown.SampleTaskSearch
+TacticsFire.TaskBuildingSelector : adf.sample.module.complex.centralized.SampleTaskBuildingSelector
+TacticsFire.TaskSearch : adf.sample.module.complex.centralized.SampleTaskSearch
 
 TacticsPolice.PathPlanning : myteam.module.algorithm.AStarPathPlanning
 TacticsPolice.Clustering : adf.sample.module.algorithm.SampleKMeans
 TacticsPolice.RoadSelector : adf.sample.module.complex.SampleRoadSelector
 TacticsPolice.Search : adf.sample.module.complex.SampleSearch
-TacticsPolice.TaskRoadSelector : adf.sample.module.complex.topdown.SampleTaskRoadSelector
-TacticsPolice.TaskSearch : adf.sample.module.complex.topdown.SampleTaskSearch
+TacticsPolice.TaskRoadSelector : adf.sample.module.complex.centralized.SampleTaskRoadSelector
+TacticsPolice.TaskSearch : adf.sample.module.complex.centralized.SampleTaskSearch
 
 TacticsAmbulance.ActionTransport : adf.sample.extaction.ActionTransport
 TacticsAmbulance.ActionSearch : adf.sample.extaction.ActionExtMove
