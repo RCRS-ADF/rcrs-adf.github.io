@@ -59,8 +59,7 @@ ADFがデータの入出力のために提供するクラス
 <h3>Tactics</h3>
 <p>
 ADFを使用してエージェントをプログラミングするには，
-エージェントがどのように行動させるか記述するTactics
-を各種類のエージェントごとに記述します．
+各種類のエージェントごとにTacticsと呼ばれるクラスを記述します．
 このクラスをベースにエージェントの行動を記述していきます．
 Tacticsクラス内には，５つのイベントハンドラがあります．
 これらのハンドラが呼び出される流れは，以下の図の通りです． 
@@ -90,7 +89,8 @@ Tacticsクラス内には，５つのイベントハンドラがあります．
 </ul>
 <h3>ExtAction</h3>
 <p>
-Actionクラスを用いてサーバにエージェントの具体的な行動伝えますが，
+各Tacticsは，
+Actionクラスを用いてサーバにエージェントの具体的な行動を伝えますが，
 ExtAction(Extended Action)では，抽象的な命令からActionを生成する処理を記述します．
 現在，以下のExtActionが作られることを想定しています．
 </p>
@@ -161,7 +161,7 @@ Action以外のクラスはインスタンスとして提供されます．
 </p>
 <h3>Action</h3>
 <p>
-このクラスを用いて，サーバにエージェントの具体的な行動伝えます．
+このクラスを用いて，サーバにエージェントの具体的な行動を伝えます．
 thinkの返り値にこのクラスのインスタンスを指定します．
 </p>
 <ul>
@@ -202,7 +202,7 @@ List&lt;Integer&gt; testList = precomputeData.getIntegerList("testList");
 <p>Integerの他に，Double・Boolean・String・EntityIDを格納できます．</p>
 <h3>DevelopData</h3>
 <p>
-エージェント開発時に動的に変更する値を取得します．
+エージェント開発時の実験において動的に変更したいパラメータをDevelopDataを通して取得できます．．
 エージェントをDevelopModeで起動した場合のみ，値を取得できます．
 取得できない場合は，DEFAULE VALUEを返します．
 値は，JSONでファイルまたは，エージェント起動時の引数から入力できます．
@@ -259,7 +259,7 @@ action = moduleManager.getExtAction("adf.sample.extaction.ActionFireFighting2").
     <li>StandardMessageBundle</li>
     <p>
     ADF標準のメッセージです．
-    informationのメッセージは，各Entityの情報を伝達するために使用します．
+    informationのメッセージは，不特定多数のエージェントへ各Entityの情報を伝達するために使用します．
     centralizedのメッセージは，エージェントに命令を伝達するために使用します．
     centralizedのメッセージは宛先を指定できる指向性のあるメッセージですが，
     不特定エージェントへの要請として宛先を指定しないで送信することも可能です．
@@ -603,7 +603,7 @@ public PathPlanning calc() {
 </pre>
 <h2>module.cfg</h2>
 <p>
-module.cfg内のPathPlanningの値を今回作成したモジュールに置き換えます．
+config/module.cfg内のPathPlanningの値を今回作成したモジュールに置き換えます．
 この設定ファイル内の対応する箇所を書き換えることでモジュールを簡単に置き換えることができます．
 </p>
 <pre class="brush:plain; highlight:[1, 8, 15]">
