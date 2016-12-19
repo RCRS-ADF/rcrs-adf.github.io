@@ -1,0 +1,163 @@
+<div class="title">逆引き</div>
+<h1>質問について</h1><p>
+この逆引きの内容は順次更新していきますが，
+ADFを使ったエージェント開発について質問がありましたらメールでご連絡ください．
+<br>(フォームの用意ができましたら，ここに配置します．)
+</p>
+<p>
+メールアドレス： <img style="display:inline;" alt="rescue-github@maslab" src="http://sandbox.jpn.org/rcrswiki/images/thumb/b/b3/Rescuemtext.png/160px-Rescuemtext.png" width="160" height="14" srcset="/rcrswiki/images/b/b3/Rescuemtext.png 1.5x, /rcrswiki/images/b/b3/Rescuemtext.png 2x" /><b>.aitech.ac.jp</b>
+</p>
+
+
+<h1>ModuleManager</h1>
+<h2>module.cfgの位置</h2><p>
+module.cfgはエージェントのルートディレクトリのconfig以下に配置します．
+</p>
+<h2>Moduleの取得</h2><p>
+module.cfgで指定したModuleのクラスをキーで取得できます．
+またクラスの正式名でModuleのクラスを取得できます．
+取得方法の例を下に示します．
+</p>
+<pre class="brush:java">
+// キーによる指定と，もし取得できなかった場合のデフォルト値による取得
+this.pathPlanning = moduleManager.getModule("TacticsFire.PathPlanning"
+                                           , "adf.sample.module.algorithm.SamplePathPlanning");
+...
+// キーの指定による取得
+this.pathPlanning = moduleManager.getModule("TacticsFire.PathPlanning");
+...
+// 正式名による指定と，もし取得できなかった場合のデフォルト値による取得
+this.pathPlanning = moduleManager.getModule("adf.sample.module.algorithm.MyPathPlanning"
+                                           , "adf.sample.module.algorithm.SamplePathPlanning");
+...
+// 正式名の指定による取得
+this.pathPlanning = moduleManager.getModule("adf.sample.module.algorithm.MyPathPlanning");
+</pre>
+<h2>ExtActionの取得</h2><p>
+module.cfgで指定したExtActionのクラスをキーで取得できます．
+またクラスの正式名でExtActionのクラスを取得できます．
+取得方法の例を下に示します．
+</p>
+<pre class="brush:java">
+// キーによる指定と，もし取得できなかった場合のデフォルト値による取得
+action = moduleManager.getExtAction("TacticsFire.ActionFireFighting"
+                                   , "adf.sample.extaction.ActionFireFighting").setTarget(target).calc().getAction();
+...
+// キーの指定による取得
+action = moduleManager.getExtAction("TacticsFire.ActionFireFighting").setTarget(target).calc().getAction();
+...
+// 正式名による指定と，もし取得できなかった場合のデフォルト値による取得
+action = moduleManager.getExtAction("adf.sample.extaction.ActionFireFighting2"
+                                   , "adf.sample.extaction.ActionFireFighting").setTarget(target).calc().getAction();
+...
+// 正式名の指定による取得
+action = moduleManager.getExtAction("adf.sample.extaction.ActionFireFighting2").setTarget(target).calc().getAction();
+</pre>
+
+<h1>エージェント間通信</h1>
+<h2>メッセージの送信</h2><p>
+MessageManagerのaddMessage()メソッドを使います．
+また，第2引数にtrueを入れることでメッセージの重複をチェックします．
+</p>
+例：
+<pre class="brush:java">
+// 送信(重複チェックなし)
+messageManager.addMessage(new CommandPolice(true, targetAgent, targetRoad, ACTION_CLEAR));
+
+// 送信(重複チェックあり)
+messageManager.addMessage(new CommandPolice(true, targetAgent, targetRoad, ACTION_CLEAR), true);
+</pre>
+
+<h2>メッセージの受信</h2><p>
+MessageManagerのgetReceivedMessageList()メソッドを使います．
+また，引数にメッセージのクラスを指定することで指定したクラスの受信メッセージのリストを取得できます．
+</p>
+例：
+<pre class="brush:java">
+for (CommunicationMessage msg : messageManager.getReceivedMessageList(CommandPolice.class))
+{
+    CommandPolice command = (CommandPolice)msg;
+    ...
+}
+</pre>
+
+<h2>不特定のエージェントに要請を送信したい</h2><p>
+Command系のメッセージのtoIDにnullを指定することで，
+不特定多数のエージェントに送信されたメッセージであることを表現できます．
+</p>
+例：
+<pre class="brush:java">
+// 送信時
+messageManager.addMessage(new CommandPolice(true, null, target, ACTION_CLEAR));
+
+// 受信時
+for (CommunicationMessage msg : messageManager.getReceivedMessageList(CommandPolice.class))
+{
+    CommandPolice command = (CommandPolice)msg;
+    if (command.isBroadcast())
+    { ... }
+}
+</pre>
+
+<h1>PrecomputeData</h1>
+<h2>何に使うか</h2><p>
+事前計算時の情報を保持するために使用します．
+</p>
+<h2>値の保存・取り出し方法</h2><p>
+取得方法の例を下に示します．
+</p>
+例：
+<pre class="brush:java">
+precomputeData.setInteger("test", 0);
+int test = precomputeData.getInteger("test");
+precomputeData.setIntegerList("testList", testList);
+List&lt;Integer&gt; testList = precomputeData.getIntegerList("testList");
+</pre>
+<p>Integerの他に，Double・Boolean・String・EntityIDを格納できます．</p>
+<h2>値の取得できない</h2><p>
+保存操作をおこなったクラス以外からは，データを取得できません．
+これはモジュールの独立性を保つためです．
+</p>
+
+<h1>DevelopData</h1>
+<h2>何に使うか</h2><p>
+エージェント開発時に値を変えて実行を試したい場合があります．
+この際，DevelopDataを用いてエージェントに値を渡します．
+</p>
+<h2>値の受け渡し方法</h2><p>
+値の受け渡しはJSONによっておこないます．「-dd」オプションで直接，
+「-df」オプションでファイルで受け渡すことができます．
+</p>
+<h2>値の取得方法</h2><p>
+取得方法の例を下に示します．
+</p>
+例：
+<pre class="brush:java">
+int test = developData.getInteger("test", 0); // (KEY, DEFAULT VALUE)
+List&lt;Integer&gt; testList = developData.getIntegerList("testList", testList);
+</pre>
+<p>Integerの他に，Double・Boolean・Stringを取得できます．</p>
+<h2>値を取得できない</h2><p>
+DevelopDataの値は，Developモードでエージェントを起動している場合のみ取得できます．
+「-dev」オプションをつけてエージェントを起動してください．
+そのため，値の取得時はデフォルト値の指定が必ず要求されます．
+</p>
+
+<h1>注意事項</h1>
+<h2>モジュールの種類の追加について</h2><p>
+モジュールの種類の追加は基本的にできません．
+追加する場合は，RoboCupRescue Simulationのコミュニティを通してください．
+</p>
+<h2>Tacticsの変更について</h2><p>
+Tacticsの変更はできますが，なるべく変更しないでください．
+ルールによっては使用するTacticsが指定される場合があります．
+</p>
+<h2>Publicメソッドと変数について</h2><p>
+Publicメソッドと変数の追加はできません．
+継承元のオーバーライドのみ可能です．
+</p>
+<h2>Static変数について</h2><p>
+Static変数は使用できません．
+これはコード構造により，マルチエージェントシステムとして不正な通信を実現しないようにするためです．
+</p>
+
