@@ -7,23 +7,25 @@
 </p>
 <br>
 <p>
-2つ観点から書き換えるモジュールを選択する．
+以下の2つ観点から書き換えるモジュールを選択することができる．
 <ul>
 <li>各Tacticsの挙動から</li>
 <li>コミュニティが提唱する5つの課題から</li>
 </ul>
 </p>
 
-<h1>各Tacticsの挙動から</h1>
+<h1>各Tacticsの挙動から</h1><p>
+ここでは，SampleTactics*の挙動と，利用する上で必要なモジュールについて説明する．
+</p>
 <h2>各Tacticsの挙動</h2><p>
 それぞれリンク先のページで説明する．
 <ul>
-    <li>SampleTacticsFireBrigade</li>
-    <li>SampleTacticsFireStation</li>
-    <li>SampleTacticsPoliceForece</li>
-    <li>SampleTacticsPoliceOffice</li>
-    <li>SampleTacticsAmbulanceTeam</li>
-    <li>SampleTacticsAmbulanceCentre</li>
+    <li><a href="?sample/stfb.html">SampleTacticsFireBrigade</a></li>
+    <li><a href="?sample/stfs.html">SampleTacticsFireStation</a></li>
+    <li><a href="?sample/stpf.html">SampleTacticsPoliceForece</a></li>
+    <li><a href="?sample/stpo.html">SampleTacticsPoliceOffice</a></li>
+    <li><a href="?sample/stat.html">SampleTacticsAmbulanceTeam</a></li>
+    <li><a href="?sample/stac.html">SampleTacticsAmbulanceCentre</a></li>
 </ul>
 </p>
 
@@ -69,35 +71,38 @@ TacticsAmbulanceCentre.CommandPicker
 <h1>5つの課題から</h1><p>
 ここでは，各課題に対応するadf.Sampleエージェントのモジュールを列挙する．
 </p>
-<h2>Multi-Task Allocation</h2><h2>
-</h2>
+<h2>Multi-Task Allocation</h2><p>
+マルチタスク割り当てに関わるモジュールの呼び出しは以下のようにおこなわれている．
+</p>
 <pre>
 TacticsFireBrigade.BuildingSelector : adf.sample.module.complex.SampleBuildingDetector
 TacticsPoliceForce.RoadDetector : adf.sample.module.complex.SampleRoadDetector
 TacticsAmbulanceTeam.HumanDetector : adf.sample.module.complex.SampleVictimDetector
 
 TacticsFireStation.TargetAllocator : adf.sample.module.complex.SampleFireTargetAllocator
-TacticsFireStation.CommandPicker : adf.sample.centralized.CommandPickerFire
 TacticsPoliceOffice.TargetAllocator : adf.sample.module.complex.SamplePoliceTargetAllocator
-TacticsPoliceOffice.CommandPicker : adf.sample.centralized.CommandPickerPolice
 TacticsAmbulanceCentre.TargetAllocator : adf.sample.module.complex.SampleAmbulanceTargetAllocator
+
+TacticsFireStation.CommandPicker : adf.sample.centralized.CommandPickerFire
+TacticsPoliceOffice.CommandPicker : adf.sample.centralized.CommandPickerPolice
 TacticsAmbulanceCentre.CommandPicker : adf.sample.centralized.CommandPickerAmbulance
 </pre>
-<h2>Search</h2><h2>
-</h2>
+<h2>Search</h2><p>
+情報探索に関わるモジュールの呼び出しは以下のようにおこなわれている．
+</p>
 <pre>
 TacticsFireBrigade.Search : adf.sample.module.complex.SampleSearch
 TacticsPoliceForce.Search : adf.sample.module.complex.SampleSearch
 TacticsAmbulanceTeam.Search : adf.sample.module.complex.SampleSearch
 </pre>
-<h2>Path Planning</h2><h2>
-</h2>
+<h2>Path Planning</h2><p>
+経路探索に関わるモジュールの呼び出しは以下のようにおこなわれている．
+</p>
 <pre>
 CommandExecutorFire.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
 CommandExecutorPolice.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
 CommandExecutorAmbulance.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
 
-SampleBuildingDetector.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
 SampleRoadDetector.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
 
 SampleSearch.PathPlanning.Fire : adf.sample.module.algorithm.SamplePathPlanning
@@ -109,8 +114,9 @@ ActionExtClear.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
 ActionTransport.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
 ActionExtMove.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
 </pre>
-<h2>Group Formation</h2><h2>
-</h2>
+<h2>Group Formation</h2><p>
+グループ形成に関わるモジュールの呼び出しは以下のようにおこなわれている．
+</p>
 <pre>
 SampleBuildingDetector.Clustering : adf.sample.module.algorithm.SampleKMeans
 SampleVictimDetector.Clustering : adf.sample.module.algorithm.SampleKMeans
@@ -120,5 +126,5 @@ SampleSearch.Clustering.Police : adf.sample.module.algorithm.SampleKMeans
 SampleSearch.Clustering.Ambulance : adf.sample.module.algorithm.SampleKMeans
 </pre>
 <h2>Communication</h2>
-<p>通信に関しては各モジュールで必要なメッセージを送受信する．</p>
+<p>情報共有に関しては各モジュールで必要なメッセージを送受信する．</p>
 
