@@ -11,8 +11,11 @@
 <h2>
 <span style="color:#00FF00">■</span>
 CommandExecutorFire</h2><p>
+[CommandExecutor(link)]
+Centralized制御の場合の消火活動について記述します．
+Decentralized制御だけの場合は無視してください．
 </p>
-<p>以下のモジュールが初期状態では指定されている．</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
 <pre>
 TacticsFireBrigade.CommandExecutorFire : adf.sample.centralized.CommandExecutorFire
 </pre>
@@ -21,7 +24,7 @@ TacticsFireBrigade.CommandExecutorFire : adf.sample.centralized.CommandExecutorF
 <span style="color:#FFF100">■</span>
 CommandExecutorScout</h2><p>
 </p>
-<p>以下のモジュールが初期状態では指定されている．</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
 <pre>
 TacticsFireBrigade.CommandExecutorScout : adf.sample.centralized.CommandExecutorScout
 </pre>
@@ -30,33 +33,36 @@ TacticsFireBrigade.CommandExecutorScout : adf.sample.centralized.CommandExecutor
 <span style="color:#FF0000">■</span>
 SampleBuildingDetector</h2><p>
 </p>
-<p>以下のモジュールが初期状態では指定されている．</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
 <pre>
-
+TacticsFireBrigade.BuildingDetector : adf.sample.module.complex.SampleBuildingDetector
 </pre>
 
 <h2>
 <span style="color:#0000FF">■</span>
 SampleSearch</h2><p>
 </p>
-<p>以下のモジュールが初期状態では指定されている．</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
 <pre>
+TacticsFireBrigade.Search : adf.sample.module.complex.SampleSearch
 </pre>
 
 <h2>
 <span style="color:#FF00CD">■</span>
 ActionFireFighting</h2><p>
 </p>
-<p>以下のモジュールが初期状態では指定されている．</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
 <pre>
+TacticsFireBrigade.ActionFireFighting : adf.sample.extaction.ActionFireFighting
 </pre>
 
 <h2>
 <span style="color:#00CEFF">■</span>
 ActionExtMove</h2><p>
 </p>
-<p>以下のモジュールが初期状態では指定されている．</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
 <pre>
+TacticsFireBrigade.ActionExtMove : adf.sample.extaction.ActionExtMove
 </pre>
 
 <h2>
@@ -66,14 +72,21 @@ ActionExtMove</h2><p>
 </p>
 <h3>SamplePathPlanning</h3><p>
 </p>
-<p>以下のモジュールが初期状態では指定されている．</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
 <pre>
+CommandExecutorFire.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
+CommandExecutorScout.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
+ActionFireFighting.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
+SampleSearch.PathPlanning.Fire : adf.sample.module.algorithm.SamplePathPlanning
+ActionExtMove.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
 </pre>
 
 <h3>SampleKMeans</h3><p>
 </p>
-<p>以下のモジュールが初期状態では指定されている．</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
 <pre>
+SampleBuildingDetector.Clustering : adf.sample.module.algorithm.SampleKMeans
+SampleSearch.Clustering.Fire : adf.sample.module.algorithm.SampleKMeans
 </pre>
 
 
