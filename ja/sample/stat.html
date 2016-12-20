@@ -1,0 +1,92 @@
+<div class="title">SampleTacticsAmbulanceTeam</div>
+<h1>Flow</h1><p>
+以下の図の流れでモジュールが呼び出される．
+</p>
+<img src="image/SampleTacticsAmbulanceTeam.svg" data-lity>
+
+<h1>Module</h1><p>
+色のついたモジュールはTacticsから直接呼び出されるため，
+必ず実装する必要がある．
+</p>
+<h2>
+<span style="color:#00FF00">■</span>
+CommandExecutorAmbulance</h2><p>
+[CommandExecutor(link)]
+Centralized制御の場合の救出活動について記述します．
+Decentralized制御だけの場合は無視してください．
+</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
+<pre>
+TacticsAmbulanceTeam.CommandExecutorAmbulance : adf.sample.centralized.CommandExecutorAmbulance
+</pre>
+
+<h2>
+<span style="color:#FFF100">■</span>
+CommandExecutorScout</h2><p>
+</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
+<pre>
+TacticsAmbulanceTeam.CommandExecutorScout : adf.sample.centralized.CommandExecutorScout
+</pre>
+
+<h2>
+<span style="color:#FF0000">■</span>
+SampleHumanDetector</h2><p>
+</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
+<pre>
+TacticsAmbulanceTeam.HumanDetector : adf.sample.module.complex.SampleHumanDetector
+</pre>
+
+<h2>
+<span style="color:#0000FF">■</span>
+SampleSearch</h2><p>
+</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
+<pre>
+TacticsAmbulanceTeam.Search : adf.sample.module.complex.SampleSearch
+</pre>
+
+<h2>
+<span style="color:#FF00CD">■</span>
+ActionTransport</h2><p>
+</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
+<pre>
+TacticsAmbulanceTeam.ActionTransport : adf.sample.extaction.ActionTransport
+</pre>
+
+<h2>
+<span style="color:#00CEFF">■</span>
+ActionExtMove</h2><p>
+</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
+<pre>
+TacticsAmbulanceTeam.ActionExtMove : adf.sample.extaction.ActionExtMove
+</pre>
+
+<h2>
+<span style="color:#BFBFBF;">■</span>
+その他のモジュール</h2><p>
+これらのモジュールは上で挙げたモジュールから呼び出される．
+</p>
+<h3>SamplePathPlanning</h3><p>
+</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
+<pre>
+CommandExecutorAmbulance.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
+CommandExecutorScout.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
+ActionTransport.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
+SampleSearch.PathPlanning.Ambulance : adf.sample.module.algorithm.SamplePathPlanning
+ActionExtMove.PathPlanning : adf.sample.module.algorithm.SamplePathPlanning
+</pre>
+
+<h3>SampleKMeans</h3><p>
+</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
+<pre>
+SampleHumanDetector.Clustering : adf.sample.module.algorithm.SampleKMeans
+SampleSearch.Clustering.Ambulance : adf.sample.module.algorithm.SampleKMeans
+</pre>
+
+

@@ -1,0 +1,36 @@
+<div class="title">SampleTacticsPoliceOffice</div>
+<h1>Flow</h1><p>
+以下の図の流れでモジュールが呼び出される．
+</p>
+<img src="image/SampleTacticsPoliceOffice.svg" data-lity>
+
+<h1>Module</h1><p>
+ここで挙げるモジュールはTacticsから直接呼び出されるため，
+必ず実装する必要がある．
+</p>
+<h2>
+<span style="color:#FF0000">■</span>
+CommandPoliceTargetAllocator</h2><p>
+[TargetAllocator(link)] Centralized制御時のエージェントと活動対象の紐付けをおこないます．
+</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
+<pre>
+TacticsPoliceOffice.TargetAllocator : adf.sample.module.complex.SamplePoliceTargetAllocator
+</pre>
+<p>
+Decentralized制御だけで動作させる場合は，以下のモジュールを指定することができます．
+</p>
+<pre>
+adf.sample.module.complex.SampleDecentralizedPoliceTargetAllocator
+</pre>
+
+<h2>
+<span style="color:#FF00CD">■</span>
+CommandPickerPolice</h2><p>
+[CommandPicker(link)] Centralized制御時に，エージェントと活動対象の紐付けをもとに送信するメッセージの指定をおこないます．
+</p>
+<p>以下にモジュールキーと初期状態のモジュール指定を記載する．(Key : Class)</p>
+<pre>
+TacticsPoliceOffice.CommandPicker : adf.sample.centralized.CommandPickerPolice
+</pre>
+
